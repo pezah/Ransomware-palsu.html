@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>!!! CRITICAL SYSTEM ALERT !!!</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+        
+        body {
+            background-color: #000;
+            color: #ff0000;
+            font-family: 'Share Tech Mono', monospace;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            height: 100vh;
+            cursor: none;
+            user-select: none;
+        }
+        
+        #container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            background: radial-gradient(ellipse at center, rgba(255,0,0,0.1) 0%, rgba(0,0,0,0.9) 70%);
+        }
+        
+        .logo-img {
+            width: 300px;
+            margin-bottom: 20px;
+            filter: drop-shadow(0 0 10px #ff0000);
+            animation: pulse 1.5s infinite alternate;
+        }
+        
+        h1 {
+            font-size: 42px;
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            text-shadow: 0 0 15px #ff0000;
+            animation: flicker 0.01s infinite alternate;
+        }
+        
+        .message {
+            max-width: 800px;
+            text-align: center;
+            margin: 20px 0;
+            line-height: 1.6;
+            font-size: 18px;
+        }
+        
+        .countdown {
+            font-size: 28px;
+            margin: 20px 0;
+            color: #ff5555;
+        }
+        
+        .file-list {
+            border: 1px solid #ff0000;
+            padding: 10px;
+            max-height: 150px;
+            overflow-y: scroll;
+            width: 80%;
+            margin: 20px 0;
+            background-color: rgba(0,0,0,0.5);
+        }
+        
+        .file-item {
+            padding: 3px 0;
+            animation: fileGlitch 0.1s infinite alternate;
+        }
+        
+        .btc-address {
+            font-family: monospace;
+            font-size: 24px;
+            color: #ff0000;
+            background: #111;
+            padding: 10px 20px;
+            border: 1px solid #ff0000;
+            margin: 20px 0;
+            letter-spacing: 1px;
+        }
+        
+        #decrypt-btn {
+            background: linear-gradient(to bottom, #ff0000, #800000);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 18px;
+            font-family: 'Share Tech Mono', monospace;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-top: 30px;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            border-radius: 0;
+            box-shadow: 0 0 20px #ff0000;
+        }
+        
+        #decrypt-btn:hover {
+            background: linear-gradient(to bottom, #ff3333, #990000);
+        }
+        
+        #decrypt-btn:active {
+            background: linear-gradient(to bottom, #cc0000, #660000);
+        }
+        
+        #decrypt-btn::after {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -60%;
+            width: 200%;
+            height: 200%;
+            background: rgba(255,255,255,0.1);
+            transform: rotate(30deg);
+            transition: all 0.3s;
+        }
+        
+        #decrypt-btn:hover::after {
+            left: 100%;
+        }
+        
+        .warning {
+            color: #ff5555;
+            font-size: 14px;
+            margin-top: 30px;
+            text-align: center;
+            max-width: 600px;
+        }
+        
+        /* Animations */
+        @keyframes flicker {
+            0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
+                opacity: 1;
+            }
+            20%, 22%, 24%, 55% {
+                opacity: 0.5;
+            }
+        }
+        
+        @keyframes pulse {
+            0% {
+                opacity: 0.8;
+                text-shadow: 0 0 5px #ff0000;
+            }
+            100% {
+                opacity: 1;
+                text-shadow: 0 0 20px #ff0000;
+            }
+        }
+        
+        @keyframes fileGlitch {
+            0% {
+                transform: translateX(0);
+            }
+            25% {
+                transform: translateX(-1px);
+            }
+            50% {
+                transform: translateX(1px);
+            }
+            75% {
+                transform: translateX(-1px);
+            }
+            100% {
+                transform: translateX(0);
+            }
+        }
+        
+        /* Matrix rain effect */
+        #matrix {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            opacity: 0.3;
+        }
+        
+        /* Fake system error popups */
+        .error-popup {
+            position: absolute;
+            background-color: #300000;
+            border: 1px solid #ff0000;
+            padding: 10px;
+            width: 300px;
+            z-index: 1000;
+            box-shadow: 0 0 20px #ff0000;
+            display: none;
+        }
+        
+        .error-title {
+            color: white;
+            background-color: #ff0000;
+            padding: 5px;
+            font-weight: bold;
+            margin: -10px -10px 10px -10px;
+        }
+        
+        .error-msg {
+            color: #ffaaaa;
+            font-size: 12px;
+            margin-bottom: 10px;
+        }
+        
+        .error-btn {
+            background-color: #ff0000;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            float: right;
+            font-size: 12px;
+            cursor: pointer;
+        }
+        
+        /* Audio controls (hidden) */
+        #audio-controls {
+            position: absolute;
+            top: -100px;
+            left: -100px;
+            opacity: 0;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="matrix"></canvas>
+    
+    <div id="container">
+        <!-- RedBlack Logo Image -->
+        <img src="images.jpeg" class="logo-img" alt="RedBlack Logo">
+        
+        <h1>YOUR FILES HAVE BEEN ENCRYPTED!</h1>
+        
+        <div class="message">
+            <p>All your important files, documents, photos, databases and other data have been encrypted with military-grade AES-256 encryption.</p>
+            <p>The only way to recover your files is to purchase our decryption software.</p>
+        </div>
+        
+        <div class="countdown" id="countdown">TIME REMAINING: 23:59:59</div>
+        
+        <div class="file-list" id="file-list">
+            <!-- Files will be added by JavaScript -->
+        </div>
+        
+        <div class="message">
+            <p>To decrypt your files, you must pay <strong>0.05 BTC</strong> to the following Bitcoin address:</p>
+            <div class="btc-address" id="btc-address">REDB-1BL4CK-R4NS0MW4RE-XXXX</div>
+            <p>After payment, click the DECRYPT button below to begin file recovery.</p>
+        </div>
+        
+        <button id="decrypt-btn">DECRYPT FILES (0.05 BTC)</button>
+        
+        <div class="warning">
+            WARNING: Do NOT attempt to remove this software or restart your computer.<br>
+            Doing so may result in permanent data loss. All activity is being monitored.
+        </div>
+    </div>
+    
+    <!-- Audio elements -->
+    <div id="custom-sound">
+        <audio id="background-sound" loop>
+            <source src="ssstik.io_1742370339573.mp3" type="audio/mpeg">
+        </audio>
+        <audio id="glitch-sound">
+            <source src="https://assets.mixkit.co/sfx/preview/mixkit-computer-glitch-bleeps-2841.mp3" type="audio/mpeg">
+        </audio>
+        <audio id="error-sound">
+            <source src="https://assets.mixkit.co/sfx/preview/mixkit-sci-fi-alarm-905.mp3" type="audio/mpeg">
+        </audio>
+        <audio id="typing-sound" loop>
+            <source src="https://assets.mixkit.co/sfx/preview/mixkit-fast-robot-keyboard-typing-1386.mp3" type="audio/mpeg">
+        </audio>
+        <audio id="success-sound">
+            <source src="https://assets.mixkit.co/sfx/preview/mixkit-unlock-game-notification-253.mp3" type="audio/mpeg">
+        </audio>
+        <audio id="ai-voice-1">
+            <source src="https://assets.mixkit.co/sfx/preview/mixkit-robot-voice-says-warning-259.mp3" type="audio/mpeg">
+        </audio>
+        <audio id="ai-voice-2">
+            <source src="https://assets.mixkit.co/sfx/preview/mixkit-robot-voice-says-system-failure-258.mp3" type="audio/mpeg">
+        </audio>
+    </div>
+    
+    <!-- Fake error popups will be added here -->
+    
+    <script>
+        // Initialize speech synthesis
+        const synth = window.speechSynthesis;
+        
+        // Matrix rain effect
+        const canvas = document.getElementById('matrix');
+        const ctx = canvas.getContext('2d');
+        
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        
+        const katakana = 'アァカサタナハマヤャラワガザダバパイィキシチニヒミリヰギジヂビピウゥクスツヌフムユュルグズブヅプエェケセテネヘメレヱゲゼデベペオォコソトノホモヨョロヲゴゾドボポヴッン';
+        const latin = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        const nums = '0123456789';
+        const symbols = '!"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~';
+        
+        const alphabet = katakana + latin + nums + symbols;
+        
+        const fontSize = 16;
+        const columns = canvas.width / fontSize;
+        
+        const rainDrops = [];
+        
+        for (let x = 0; x < columns; x++) {
+            rainDrops[x] = 1;
+        }
+        
+        const draw = () => {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            ctx.fillStyle = '#ff0000';
+            ctx.font = fontSize + 'px monospace';
+            
+            for (let i = 0; i < rainDrops.length; i++) {
+                const text = alphabet.charAt(Math.floor(Math.random() * alphabet.length));
+                ctx.fillText(text, i * fontSize, rainDrops[i] * fontSize);
+                
+                if (rainDrops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                    rainDrops[i] = 0;
+                }
+                rainDrops[i]++;
+            }
+        };
+        
+        setInterval(draw, 30);
+        
+        // Audio elements
+        const backgroundSound = document.getElementById('background-sound');
+        const glitchSound = document.getElementById('glitch-sound');
+        const errorSound = document.getElementById('error-sound');
+        const typingSound = document.getElementById('typing-sound');
+        const successSound = document.getElementById('success-sound');
+        const aiVoice1 = document.getElementById('ai-voice-1');
+        const aiVoice2 = document.getElementById('ai-voice-2');
+        
+        // Play background sound
+        setTimeout(() => {
+            backgroundSound.volume = 0.3;
+            backgroundSound.play().catch(e => console.log("Audio play failed:", e));
+            
+            // Play initial AI voice
+            setTimeout(() => {
+                aiVoice1.volume = 0.7;
+                aiVoice1.play();
+            }, 1500);
+        }, 500);
+        
+        // Countdown timer
+        let hours = 23;
+        let minutes = 59;
+        let seconds = 59;
+        
+        const updateCountdown = () => {
+            const countdown = document.getElementById('countdown');
+            countdown.textContent = `TIME REMAINING: ${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            
+            seconds--;
+            if (seconds < 0) {
+                seconds = 59;
+                minutes--;
+                if (minutes < 0) {
+                    minutes = 59;
+                    hours--;
+                    if (hours < 0) {
+                        hours = 0;
+                        minutes = 0;
+                        seconds = 0;
+                        clearInterval(countdownInterval);
+                        aiVoice2.volume = 0.7;
+                        aiVoice2.play();
+                    }
+                }
+            }
+            
+            // Play warning sounds at specific times
+            if (hours === 1 && minutes === 0 && seconds === 0) {
+                aiVoice1.volume = 0.7;
+                aiVoice1.currentTime = 0;
+                aiVoice1.play();
+            }
+            if (hours === 0 && minutes === 30 && seconds === 0) {
+                aiVoice1.volume = 0.7;
+                aiVoice1.currentTime = 0;
+                aiVoice1.play();
+            }
+            if (hours === 0 && minutes === 10 && seconds === 0) {
+                aiVoice2.volume = 0.7;
+                aiVoice2.currentTime = 0;
+                aiVoice2.play();
+            }
+        };
+        
+        const countdownInterval = setInterval(updateCountdown, 1000);
+        
+        // Generate random file list
+        const fileTypes = [
+            'document', 'photo', 'database', 'video', 'archive', 
+            'spreadsheet', 'presentation', 'code', 'config'
+        ];
+        
+        const fileExtensions = [
+            'docx', 'xlsx', 'pptx', 'pdf', 'jpg', 'png', 
+            'mp4', 'avi', 'mov', 'zip', 'rar', '7z', 'sql', 
+            'json', 'xml', 'html', 'css', 'js', 'py', 'java'
+        ];
+        
+        const folders = [
+            'Documents', 'Pictures', 'Videos', 'Desktop', 
+            'Downloads', 'Work', 'Personal', 'Projects', 
+            'Backups', 'Financial', 'Private'
+        ];
+        
+        const fileList = document.getElementById('file-list');
+        
+        // Play typing sound while generating file list
+        typingSound.volume = 0.3;
+        typingSound.play();
+        
+        for (let i = 0; i < 50; i++) {
+            const type = fileTypes[Math.floor(Math.random() * fileTypes.length)];
+            const ext = fileExtensions[Math.floor(Math.random() * fileExtensions.length)];
+            const folder = folders[Math.floor(Math.random() * folders.length)];
+            const name = `${type}_${Math.floor(Math.random() * 10000)}.${ext}`;
+            
+            const fileItem = document.createElement('div');
+            fileItem.className = 'file-item';
+            fileItem.textContent = `C:\\Users\\${Math.random() > 0.5 ? 'User' : 'Admin'}\\${folder}\\${name}`;
+            
+            fileList.appendChild(fileItem);
+        }
+        
+        // Stop typing sound after files are loaded
+        setTimeout(() => {
+            typingSound.pause();
+        }, 2000);
+        
+        // Make file list scroll automatically
+        setInterval(() => {
+            fileList.scrollTop += 1;
+            if (fileList.scrollTop >= fileList.scrollHeight - fileList.clientHeight) {
+                fileList.scrollTop = 0;
+            }
+        }, 100);
+        
+        // Create random error popups
+        const createErrorPopup = () => {
+            const errors = [
+                "CRITICAL SYSTEM ERROR: File system corruption detected",
+                "ACCESS DENIED: Unauthorized decryption attempt",
+                "WARNING: Bitcoin payment verification failed",
+                "ERROR: Cannot access system restore point",
+                "ALERT: Antivirus service terminated",
+                "FAILURE: Backup restoration unsuccessful",
+                "WARNING: Network activity detected",
+                "ERROR: System registry modification blocked"
+            ];
+            
+            const solutions = [
+                "Please wait while system diagnostics complete",
+                "Payment verification in progress...",
+                "Attempting to restore from backup...",
+                "Scanning for file recovery options...",
+                "Contacting command server...",
+                "Rebuilding file allocation table..."
+            ];
+            
+            const popup = document.createElement('div');
+            popup.className = 'error-popup';
+            popup.style.left = `${Math.random() * (window.innerWidth - 320)}px`;
+            popup.style.top = `${Math.random() * (window.innerHeight - 150)}px`;
+            
+            const title = document.createElement('div');
+            title.className = 'error-title';
+            title.textContent = "SYSTEM ALERT";
+            
+            const msg = document.createElement('div');
+            msg.className = 'error-msg';
+            msg.textContent = errors[Math.floor(Math.random() * errors.length)] + "\n\n" + 
+                            solutions[Math.floor(Math.random() * solutions.length)];
+            
+            const btn = document.createElement('button');
+            btn.className = 'error-btn';
+            btn.textContent = "OK";
+            btn.onclick = () => {
+                popup.remove();
+            };
+            
+            popup.appendChild(title);
+            popup.appendChild(msg);
+            popup.appendChild(btn);
+            
+            document.body.appendChild(popup);
+            
+            // Play error sound
+            errorSound.volume = 0.3;
+            errorSound.currentTime = 0;
+            errorSound.play();
+            
+            setTimeout(() => {
+                popup.style.display = 'block';
+            }, 100);
+        };
+        
+        // Show error popups randomly
+        setInterval(() => {
+            if (Math.random() > 0.7) {
+                createErrorPopup();
+                glitchSound.volume = 0.3;
+                glitchSound.currentTime = 0;
+                glitchSound.play();
+            }
+        }, 5000);
+        
+        // Make some popups appear immediately
+        setTimeout(createErrorPopup, 1000);
+        setTimeout(() => {
+            createErrorPopup();
+            glitchSound.volume = 0.3;
+            glitchSound.currentTime = 0;
+            glitchSound.play();
+        }, 3000);
+        setTimeout(createErrorPopup, 5000);
+        
+        // Decrypt button functionality
+        document.getElementById('decrypt-btn').addEventListener('click', () => {
+            // Play click sound
+            glitchSound.volume = 0.3;
+            glitchSound.currentTime = 0;
+            glitchSound.play();
+            
+            aiVoice1.volume = 0.7;
+            aiVoice1.currentTime = 0;
+            aiVoice1.play();
+            
+            // Create fake decryption progress
+            const container = document.getElementById('container');
+            container.innerHTML = `
+                <h1>DECRYPTION IN PROGRESS</h1>
+                <img src="https://via.placeholder.com/300x100/ff0000/000000?text=REDBLACK" class="logo-img" alt="RedBlack Logo">
+                <div id="progress-container" style="width: 80%; background: #111; height: 30px; margin: 30px 0; border: 1px solid #ff0000;">
+                    <div id="progress-bar" style="height: 100%; width: 0%; background: linear-gradient(to right, #ff0000, #990000); transition: width 0.1s;"></div>
+                </div>
+                <div id="progress-text" style="font-size: 18px;">Initializing decryption engine... 0%</div>
+                <div class="warning" style="margin-top: 50px;">
+                    DO NOT CLOSE THIS WINDOW OR INTERRUPT THE PROCESS<br>
+                    DECRYPTION MAY TAKE SEVERAL MINUTES
+                </div>
+            `;
+                        // Play typing sound during decryption
+            typingSound.volume = 0.2;
+            typingSound.currentTime = 0;
+            typingSound.play();
+            
+            let progress = 0;
+            const progressBar = document.getElementById('progress-bar');
+            const progressText = document.getElementById('progress-text');
+            
+            const progressInterval = setInterval(() => {
+                progress += Math.random() * 5;
+                if (progress > 100) progress = 100;
+                
+                progressBar.style.width = `${progress}%`;
+                
+                const statusMessages = [
+                    "Decrypting file allocation table...",
+                    "Recovering master file table...",
+                    "Restoring system registry keys...",
+                    "Verifying Bitcoin transaction...",
+                    "Reconstructing damaged sectors...",
+                    "Bypassing security protocols...",
+                    "Finalizing decryption process..."
+                ];
+                
+                const randomMsg = statusMessages[Math.floor(Math.random() * statusMessages.length)];
+                progressText.textContent = `${randomMsg} ${Math.floor(progress)}%`;
+                
+                // Play progress sounds
+                if (progress === 25) {
+                    glitchSound.volume = 0.2;
+                    glitchSound.currentTime = 0;
+                    glitchSound.play();
+                } else if (progress === 50) {
+                    glitchSound.volume = 0.2;
+                    glitchSound.currentTime = 0;
+                    glitchSound.play();
+                } else if (progress === 75) {
+                    glitchSound.volume = 0.2;
+                    glitchSound.currentTime = 0;
+                    glitchSound.play();
+                }
+                
+                if (progress >= 100) {
+                    clearInterval(progressInterval);
+                    typingSound.pause();
+                    
+                    // Play success sound
+                    successSound.volume = 0.5;
+                    successSound.currentTime = 0;
+                    successSound.play();
+                    
+                    setTimeout(() => {
+                        container.innerHTML = `
+                            <h1 style="color: #00ff00;">DECRYPTION COMPLETE!</h1>
+                            <img src="https://via.placeholder.com/300x100/00ff00/000000?text=REDBLACK" class="logo-img" style="filter: drop-shadow(0 0 10px #00ff00);" alt="RedBlack Logo">
+                            <div class="message">
+                                <p>All your files have been successfully decrypted and restored.</p>
+                                <p>Thank you for your cooperation.</p>
+                            </div>
+                            <div class="warning" style="color: #00ff00;">
+                                This was a harmless simulation. No files were actually encrypted.<br>
+                                This page is part of a cybersecurity awareness demonstration.
+                            </div>
+                            <button onclick="window.location.reload()" style="background: linear-gradient(to bottom, #00aa00, #006600); margin-top: 30px;">
+                                CLOSE SIMULATION
+                            </button>
+                        `;
+                        
+                        backgroundSound.pause();
+                    }, 1000);
+                }
+            }, 200);
+        });
+        
+        // Disable right click and keyboard shortcuts
+        document.addEventListener('contextmenu', e => e.preventDefault());
+        document.addEventListener('keydown', e => {
+            if (e.ctrlKey || e.altKey || e.metaKey) {
+                e.preventDefault();
+                createErrorPopup();
+                errorSound.volume = 0.5;
+                errorSound.currentTime = 0;
+                errorSound.play();
+            }
+        });
+        
+        // Make cursor invisible
+        document.body.style.cursor = 'none';
+    </script>
+</body>
+</html>
